@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+.env.example
+mlflow/
+*.egg-info/
+dist/
+build/
+.claude/
+**/.git.bak/

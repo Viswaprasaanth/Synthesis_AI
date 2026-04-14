@@ -1,0 +1,54 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install backend dependencies
+        run: |
+          cd backend
+          pip install -r requirements.txt
+          python -m spacy download en_core_web_sm
+
+      - name: Run linter
+        run: |
+          pip install ruff
+          ruff check backend/app/
+
+      - name: Run tests
+        run: |
+          pip install pytest pytest-asyncio httpx
+          pytest backend/tests/ -v
+        env:
+          GROQ_API_KEY: test-key
+          QDRANT_URL: http://localhost:6333
+          QDRANT_API_KEY: test-key
+          API_KEY: default-key
+
+  docker-build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build backend image
+        run: docker build -t synthesis-ai-backend ./backend
+
+      - name: Build frontend image
+        run: docker build -t synthesis-ai-frontend ./frontend
+
+      - name: Confirm images built
+        run: docker images | grep synthesis-ai
