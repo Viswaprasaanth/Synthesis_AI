@@ -1,4 +1,5 @@
-import json, re
+import json
+import re
 from app.services.llm import get_llm
 from app.models import (
     PaperMeta, MethodComparison, Contradiction, ResearchGap,

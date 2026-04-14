@@ -1,5 +1,4 @@
 import fitz  # PyMuPDF
-from pathlib import Path
 
 
 def extract_text_from_pdf(file_bytes: bytes) -> str:
