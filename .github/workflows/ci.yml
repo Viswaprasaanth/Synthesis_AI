@@ -29,9 +29,10 @@ jobs:
           ruff check backend/app/
 
       - name: Run tests
+        working-directory: backend
         run: |
           pip install pytest pytest-asyncio httpx
-          pytest backend/tests/ -v
+          pytest tests/ -v
         env:
           GROQ_API_KEY: test-key
           QDRANT_URL: http://localhost:6333
